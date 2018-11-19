@@ -9,23 +9,29 @@
   $sender_txt = $json_obj->events[0]->message->text; //取得訊息內容
   $sender_replyToken = $json_obj->events[0]->replyToken; //取得訊息的replyToken
   
- $response = array (
-		"replyToken" => $sender_replyToken,
-		"messages" => array (
-		  array (
-							"type" => "location",
-							"title" => "my location",
-							"address" => "〒150-0002 東京都渋谷区渋谷２丁目２１−１",
-							"latitude" => 35.65910807942215,
-							"longitude" => 139.70372892916203
-			)
-		)
-	);
+  $sender_txt=rawurlencode($sender_txt); //因為使用get的方式呼叫luis api，所以需要轉碼
+  $ch = curl_init('https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/d7099908-c035-419a-a0b7-979e34e3a58b?subscription-key=d5f8632d50084d24834a4513ef14b9a3&timezoneOffset=-360&q='.$sender_txt);                                                                      
+  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");                                                                                                                          
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $result_str = curl_exec($ch);
+  fwrite($myfile, "\xEF\xBB\xBF".$result_str); //在字串前加上\xEF\xBB\xBF轉成utf8格式
+  $result = json_decode($result_str);
+  $ans_txt = $result -> topScoringIntent -> intent;
+  $response = array (
+    "to" => $sender_userid,
+    "messages" => array (
+      array (
+        "type" => "text",
+        "text" => $ans_txt
+      )
+    )
+  );
+  
   
  fwrite($myfile, "\xEF\xBB\xBF".json_encode($response)); //在字串前面加上\xEF\xBB\xBF轉成utf8格式
   $header[] = "Content-Type: application/json";
   $header[] = "Authorization: Bearer mMIzVL/3HSFqDXfQBuX93sR3YrKMe8htxxVVj/s2tkYR18JB4pBhwfuPw5pphdtmUYtlQk+0CRlEime5N5uL4/2RhPUscMR4rncVCMf2U+Yo7ydH0Eirf/gBre0TEl056vkVwCAZYL6gwl9gpPMhUAdB04t89/1O/w1cDnyilFU=";
-  $ch = curl_init("https://api.line.me/v2/bot/message/reply");
+  $ch = curl_init("https://api.line.me/v2/bot/message/push");
   curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
   curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($response));                                                                  
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
