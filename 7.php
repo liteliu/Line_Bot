@@ -28,7 +28,7 @@
 	  array (
 		"image" => array (
 		  "source" => array (
-			"imageUri" => "http://139.59.123.8/class/learning/".$imageId.".jpeg"
+			"imageUri" => "http://139.59.123.8/class/Lite_Bot_0615/".$imageId.".jpeg"
 		  )
 		),
 		"features" => array (
@@ -59,7 +59,7 @@
 	  array (
 		"type" => "text",
 		"text" => $ans_txt
-		//"text" => $result -> responses[0] -> fullTextAnnotation -> text
+		"text" => $result -> responses[0] -> fullTextAnnotation -> text
 	  )
 	)
   );
