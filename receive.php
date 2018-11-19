@@ -16,7 +16,7 @@
   $result_str = curl_exec($ch);
   fwrite($myfile, "\xEF\xBB\xBF".$result_str); //在字串前加上\xEF\xBB\xBF轉成utf8格式
   $result = json_decode($result_str);
-  $ans_txt = $result -> entities -> entity;
+  $ans_txt = $result -> topScoringIntent -> entity;
   $response = array (
     "to" => $sender_userid,
     "messages" => array (
