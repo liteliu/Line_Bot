@@ -23,7 +23,7 @@
     "messages" => array (
       array (
         "type" => "text",
-        "text" => $ans_txt
+        "text" => $ans_txt,
         "text" => $ans2_txt
       )
     )
