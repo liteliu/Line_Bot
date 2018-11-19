@@ -7,21 +7,25 @@
   
   $sender_userid = $json_obj->events[0]->source->userId; //取得訊息發送者的id
   $sender_txt = $json_obj->events[0]->message->text; //取得訊息內容
+  $sender_replyToken = $json_obj->events[0]->replyToken; //取得訊息的replyToken
   
-  $response = array (
-    "to" => $sender_userid,
-    "messages" => array (
-      array (
-        "type" => "text",
-        "text" => "Hello. You say". $sender_txt
-      )
-    )
-  );
+ $response = array (
+		"replyToken" => $sender_replyToken,
+		"messages" => array (
+		  array (
+							"type" => "location",
+							"title" => "my location",
+							"address" => "〒150-0002 東京都渋谷区渋谷２丁目２１−１",
+							"latitude" => 35.65910807942215,
+							"longitude" => 139.70372892916203
+			)
+		)
+	);
   
  fwrite($myfile, "\xEF\xBB\xBF".json_encode($response)); //在字串前面加上\xEF\xBB\xBF轉成utf8格式
   $header[] = "Content-Type: application/json";
   $header[] = "Authorization: Bearer mMIzVL/3HSFqDXfQBuX93sR3YrKMe8htxxVVj/s2tkYR18JB4pBhwfuPw5pphdtmUYtlQk+0CRlEime5N5uL4/2RhPUscMR4rncVCMf2U+Yo7ydH0Eirf/gBre0TEl056vkVwCAZYL6gwl9gpPMhUAdB04t89/1O/w1cDnyilFU=";
-  $ch = curl_init("https://api.line.me/v2/bot/message/push");
+  $ch = curl_init("https://api.line.me/v2/bot/message/reply");
   curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
   curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($response));                                                                  
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
